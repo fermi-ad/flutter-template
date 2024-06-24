@@ -36,6 +36,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # Fermilab core utilities
+  flutter_controls_core:
+    git:
+        url: https://github.com/fermi-ad/flutter-controls-core.git
+        ref: v0.1.x
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
