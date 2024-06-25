@@ -14,25 +14,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StandardApp(
-      title: _title,
-      appBar: AppBar(
-        title: const Text(_title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: StreamBuilder(
-          stream: service.monitorDevices(["G:SCTIME@P,15H"]),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(
-                  'Supercycle time: ${snapshot.data!.value!.toStringAsFixed(2)}');
-            }
-
-            return const Text('Loading...');
-          },
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        title: _title,
+        appBar: AppBar(title: const Text(_title)),
+        body: Center(
+            child: StreamBuilder(
+                stream: service.monitorDevices(["G:SCTIME@P,15H"]),
+                builder: (context, snapshot) => snapshot.hasData
+                    ? Text(
+                        'Supercycle time: ${snapshot.data!.value!.toStringAsFixed(2)}')
+                    : const Text('Loading...'))));
   }
 }
