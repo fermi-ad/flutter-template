@@ -6,10 +6,12 @@ RUN mkdir -p /usr/bin/flutter
 RUN chown blessuser:blessuser /usr/bin/flutter -R
 
 USER blessuser
-RUN GIT_TRACE=1; git clone -v -b stable https://github.com/flutter/flutter /usr/bin/flutter
+RUN git clone -v -b stable https://github.com/flutter/flutter /usr/bin/flutter
 RUN chmod +x /usr/bin/flutter/bin/flutter
 ENV PATH="/usr/bin/flutter/bin:${PATH}"
-RUN flutter precache
+
+# Disable telemetry
+RUN flutter --disable-analytics
 
 # Install flutter bash completion
 RUN mkdir ~/.bash-completion -p
