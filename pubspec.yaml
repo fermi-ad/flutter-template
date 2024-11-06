@@ -40,7 +40,7 @@ dependencies:
   flutter_controls_core:
     git:
         url: https://github.com/fermi-ad/flutter-controls-core.git
-        ref: v0.1.x
+        ref: v0.2.x
 
 dev_dependencies:
   flutter_test:
