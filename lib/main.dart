@@ -30,7 +30,7 @@ class App extends StatelessWidget {
 }
 
 // This is the body of the application. Typically the body will be implemented
-// by widgets defined in other mofules.
+// by widgets defined in other modules.
 //
 // You may wonder why, with such a simple example, this wasn't placed in the
 // `App` widget. It's because, in `App's` `build` method, the 'context' points
