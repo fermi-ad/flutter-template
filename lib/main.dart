@@ -1,8 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_controls_core/flutter_controls_core.dart';
 
-Future<void> main() async {
-  await runFermiApp(appWidget: const App());
+// Entry point for the application. Use `runFermiApp` to initialize the
+// application's environment (set themes, prepare authentication resources,
+// etc.)
+
+Future<void> main() async => runFermiApp(
+    appWidget: const App(),
+    authInfo:
+
+        // Replace this info with your application's configuration. These
+        // specific parameters will let you see what it's like to log in
+        // using SSO, but won't give you any privileges in the control
+        // system.
+
+        const AuthInfo(
+            clientId: "auth-demo",
+            clientSecret: "vPL2PWccDhFfbsUJjRsv5qdzJpWAhx4K",
+            realm: "acsys",
+            scopes: []));
+
+// This is a simple, private widget that implements one item in the body of
+// the drawer. This demo creates several of these widgets to show how a drawer
+// looks like with content.
+
+class _ExampleItem extends StatelessWidget {
+  final int n;
+
+  const _ExampleItem(this.n);
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+      title: Text("Item #$n"),
+      dense: true,
+      onTap: () => showDialog<()>(
+          context: context,
+          builder: (_) => AlertDialog(title: Text("You picked item #$n."))));
 }
 
 // This widget is the root of the application.
@@ -17,14 +50,22 @@ class App extends StatelessWidget {
   // `StandardApp` with an `ACSysProvider`, which allows our app to
   // access the control system.
   //
-  // By wrapping the `StandardApp` it also allows the `AppBar` to pull info
-  // from the control system (not used in this demo, but it's good to keep in
-  // mind.)
+  // The `-core` library has several provider widgets that expose APIs to
+  // the control system. Nest the providers and have the most nested widget
+  // be the `StandardApp`. By wrapping the `StandardApp` it also allows the
+  // `AppBar` to pull info from the control system (not used in this demo,
+  // but it's good to keep in mind.)
 
   @override
   Widget build(BuildContext context) => ACSysProvider(
       child: StandardApp(
           title: _title,
+          drawerContents: const [
+            _ExampleItem(1),
+            _ExampleItem(2),
+            _ExampleItem(3),
+            _ExampleItem(4),
+          ],
           appBar: AppBar(title: const Text(_title)),
           body: _BaseWidget()));
 }

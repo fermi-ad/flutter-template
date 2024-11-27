@@ -21,11 +21,26 @@ Step-by-step instructions for how-to build your project.
 
 ## How-to Test
 
-Step-by-step instructions for how-to run your project's tests.
+Each `.dart` file in the `test` subdirectory tree will be run. In each file,
+you define tests to run against the public API of your application. You can
+run the tests from the command line using:
+
+```
+$ flutter test
+```
+
+If you are using VSCode as your development environment (highly recommended!),
+you can use the "Testing" tab (on the left navigation rail) to choose which
+test to run.
 
 ## How-to Run
 
-Step-by-step instructions for how-to run your project in the development environment.
+We consider web applications to be our primary target. To run this demo app
+in a browser, use the following command in your system's shell:
+
+```
+$ flutter run chrome
+```
 
 ## How-to Deploy
 
