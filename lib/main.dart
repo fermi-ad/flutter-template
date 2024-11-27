@@ -22,7 +22,7 @@ Future<void> main() async => runFermiApp(
 
 // This is a simple, private widget that implements one item in the body of
 // the drawer. This demo creates several of these widgets to show how a drawer
-// look like with content.
+// looks like with content.
 
 class _ExampleItem extends StatelessWidget {
   final int n;
