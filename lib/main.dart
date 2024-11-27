@@ -2,7 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_controls_core/flutter_controls_core.dart';
 
 Future<void> main() async {
-  await runFermiApp(appWidget: const App());
+  await runFermiApp(
+      appWidget: const App(),
+      authInfo: const AuthInfo(
+          clientId: "auth-demo",
+          clientSecret: "vPL2PWccDhFfbsUJjRsv5qdzJpWAhx4K",
+          realm: "acsys",
+          scopes: []));
+}
+
+class _ExampleItem extends StatelessWidget {
+  final int n;
+
+  const _ExampleItem(this.n);
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+      title: Text("Item #$n"),
+      dense: true,
+      onTap: () => showDialog<()>(
+          context: context,
+          builder: (_) => AlertDialog(title: Text("You picked item #$n."))));
 }
 
 // This widget is the root of the application.
@@ -25,6 +45,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) => ACSysProvider(
       child: StandardApp(
           title: _title,
+          drawerContents: const [
+            _ExampleItem(1),
+            _ExampleItem(2),
+            _ExampleItem(3),
+            _ExampleItem(4),
+          ],
           appBar: AppBar(title: const Text(_title)),
           body: _BaseWidget()));
 }
