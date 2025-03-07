@@ -42,6 +42,45 @@ in a browser, use the following command in your system's shell:
 $ flutter run chrome
 ```
 
+### Mobile Targets
+
+This template is only set up to create web apps as that's our primary platform.
+If you want to run your app on a mobile device natively (instead of within a
+browser), you can perform the following steps. *Do not commit those changes back
+to the template repo!* It's up to you if you want to commit the mobile app support
+in your repo.
+
+Once you've copied this repo (not cloned!) go in the top directory and run
+
+```
+$ flutter create --platforms ios .
+```
+
+to add iOS as a target. You can only build iOS apps if you have XCode installed.
+This also implies you can only do this on a Macintosh computer.
+
+For Android targets, run
+
+```
+$ flutter create --platforms android .
+```
+
+Mobile device manufacturers try very hard to secure their devices so applications
+need to specify which services they intend to use and the user can approve their
+request(s) when running it for the first time. Since our framework uses network
+services, you need to request network permissions in your app's config.
+
+For Android targets, add the following tag to your `AndroidManifest.xml` file,
+immediately after the opening `manifest` tag:
+
+```
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+For iOS targets, you need to open the `.xcodeproj` file in `XCode` and add the
+permissions for network access in the application's profile. The appropriate
+`.xml` files will be modified.
+
 ## How-to Deploy
 
 Step-by-step instructions for how-to deploy your project to ad-apps.

@@ -90,6 +90,6 @@ class _BaseWidget extends StatelessWidget {
           stream: ACSys.api(context).monitorDevices(["G:SCTIME@P,15H"]),
           builder: (context, snapshot) => snapshot.hasData
               ? Text(
-                  'Supercycle time: ${snapshot.data!.value!.toStringAsFixed(2)}')
+                  'Supercycle time: ${snapshot.data!.value!.toDouble().toStringAsFixed(2)}')
               : const Text('Loading...')));
 }
