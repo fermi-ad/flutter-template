@@ -50,7 +50,7 @@ browser), you can perform the following steps. *Do not commit those changes back
 to the template repo!* It's up to you if you want to commit the mobile app support
 in your repo.
 
-Once you've copyied this repo (not cloned!) go in the top directory and run
+Once you've copied this repo (not cloned!) go in the top directory and run
 
 ```
 $ flutter create --platforms ios .
@@ -77,7 +77,7 @@ immediately after the opening `manifest` tag:
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-For iOS targets, you need to open the `.codeproj` file in `XCode` and add the
+For iOS targets, you need to open the `.xcodeproj` file in `XCode` and add the
 permissions for network access in the application's profile. The appropriate
 `.xml` files will be modified.
 
