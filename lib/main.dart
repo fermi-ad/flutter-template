@@ -54,23 +54,23 @@ class App extends StatelessWidget {
   // access the control system.
   //
   // The `-core` library has several provider widgets that expose APIs to
-  // the control system. Nest the providers and have the most nested widget
-  // be the `StandardApp`. By wrapping the `StandardApp` it also allows the
-  // `AppBar` to pull info from the control system (not used in this demo,
-  // but it's good to keep in mind.)
+  // the control system. Those widgets will have factory methods to build
+  // them. For example, `ACSysProvider.factory()` builds an `ACSysProvider`.
+  // Pass a list of these factories to the `providers` parameter.
 
   @override
-  Widget build(BuildContext context) => ACSysProvider(
-      child: StandardApp(
-          title: _title,
-          drawerContents: const [
-            _ExampleItem(1),
-            _ExampleItem(2),
-            _ExampleItem(3),
-            _ExampleItem(4),
-          ],
-          appBar: AppBar(title: const Text(_title)),
-          body: _BaseWidget()));
+  Widget build(BuildContext context) => StandardApp(
+    title: _title,
+    providers: [ACSysProvider.factory()],
+    drawerContents: const [
+      _ExampleItem(1),
+      _ExampleItem(2),
+      _ExampleItem(3),
+      _ExampleItem(4),
+    ],
+    appBar: AppBar(title: const Text(_title)),
+    body: _BaseWidget(),
+  );
 }
 
 // This is the body of the application. Typically the body will be implemented
