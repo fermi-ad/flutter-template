@@ -6,19 +6,19 @@ import 'package:flutter_controls_core/flutter_controls_core.dart';
 // etc.)
 
 Future<void> main() async => runFermiApp(
-    appWidget: const App(),
-    authInfo:
-
-        // Replace this info with your application's configuration. These
-        // specific parameters will let you see what it's like to log in
-        // using SSO, but won't give you any privileges in the control
-        // system.
-
-        const AuthInfo(
-            clientId: "auth-demo",
-            clientSecret: "vPL2PWccDhFfbsUJjRsv5qdzJpWAhx4K",
-            realm: "acsys",
-            scopes: []));
+  appWidget: const App(),
+  authInfo:
+  // Replace this info with your application's configuration. These
+  // specific parameters will let you see what it's like to log in
+  // using SSO, but won't give you any privileges in the control
+  // system.
+  const AuthInfo(
+    clientId: "auth-demo",
+    clientSecret: "vPL2PWccDhFfbsUJjRsv5qdzJpWAhx4K",
+    realm: "acsys",
+    scopes: [],
+  ),
+);
 
 // This is a simple, private widget that implements one item in the body of
 // the drawer. This demo creates several of these widgets to show how a drawer
@@ -31,11 +31,14 @@ class _ExampleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-      title: Text("Item #$n"),
-      dense: true,
-      onTap: () => showDialog<()>(
+    title: Text("Item #$n"),
+    dense: true,
+    onTap:
+        () => showDialog<()>(
           context: context,
-          builder: (_) => AlertDialog(title: Text("You picked item #$n."))));
+          builder: (_) => AlertDialog(title: Text("You picked item #$n.")),
+        ),
+  );
 }
 
 // This widget is the root of the application.
@@ -51,23 +54,23 @@ class App extends StatelessWidget {
   // access the control system.
   //
   // The `-core` library has several provider widgets that expose APIs to
-  // the control system. Nest the providers and have the most nested widget
-  // be the `StandardApp`. By wrapping the `StandardApp` it also allows the
-  // `AppBar` to pull info from the control system (not used in this demo,
-  // but it's good to keep in mind.)
+  // the control system. Those widgets will have factory methods to build
+  // them. For example, `ACSysProvider.factory()` builds an `ACSysProvider`.
+  // Pass a list of these factories to the `providers` parameter.
 
   @override
-  Widget build(BuildContext context) => ACSysProvider(
-      child: StandardApp(
-          title: _title,
-          drawerContents: const [
-            _ExampleItem(1),
-            _ExampleItem(2),
-            _ExampleItem(3),
-            _ExampleItem(4),
-          ],
-          appBar: AppBar(title: const Text(_title)),
-          body: _BaseWidget()));
+  Widget build(BuildContext context) => StandardApp(
+    title: _title,
+    providers: [ACSysProvider.factory()],
+    drawerContents: const [
+      _ExampleItem(1),
+      _ExampleItem(2),
+      _ExampleItem(3),
+      _ExampleItem(4),
+    ],
+    appBar: AppBar(title: const Text(_title)),
+    body: _BaseWidget(),
+  );
 }
 
 // This is the body of the application. Typically the body will be implemented
