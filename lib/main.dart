@@ -6,19 +6,19 @@ import 'package:flutter_controls_core/flutter_controls_core.dart';
 // etc.)
 
 Future<void> main() async => runFermiApp(
-    appWidget: const App(),
-    authInfo:
-
-        // Replace this info with your application's configuration. These
-        // specific parameters will let you see what it's like to log in
-        // using SSO, but won't give you any privileges in the control
-        // system.
-
-        const AuthInfo(
-            clientId: "auth-demo",
-            clientSecret: "vPL2PWccDhFfbsUJjRsv5qdzJpWAhx4K",
-            realm: "acsys",
-            scopes: []));
+  appWidget: const App(),
+  authInfo:
+  // Replace this info with your application's configuration. These
+  // specific parameters will let you see what it's like to log in
+  // using SSO, but won't give you any privileges in the control
+  // system.
+  const AuthInfo(
+    clientId: "auth-demo",
+    clientSecret: "vPL2PWccDhFfbsUJjRsv5qdzJpWAhx4K",
+    realm: "acsys",
+    scopes: [],
+  ),
+);
 
 // This is a simple, private widget that implements one item in the body of
 // the drawer. This demo creates several of these widgets to show how a drawer
@@ -31,11 +31,14 @@ class _ExampleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-      title: Text("Item #$n"),
-      dense: true,
-      onTap: () => showDialog<()>(
+    title: Text("Item #$n"),
+    dense: true,
+    onTap:
+        () => showDialog<()>(
           context: context,
-          builder: (_) => AlertDialog(title: Text("You picked item #$n."))));
+          builder: (_) => AlertDialog(title: Text("You picked item #$n.")),
+        ),
+  );
 }
 
 // This widget is the root of the application.
