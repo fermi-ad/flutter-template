@@ -56,7 +56,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StandardApp(
     title: _title,
-    providers: [ACSysProvider.factory()],
+    providers: [ACSysProvider.factoryUsingPort(port: 8001)],
     drawerContents: const [
       _ExampleItem(1),
       _ExampleItem(2),
