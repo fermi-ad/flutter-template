@@ -8,16 +8,11 @@ import 'package:flutter_controls_core/flutter_controls_core.dart';
 Future<void> main() async => runFermiApp(
   appWidget: const App(),
   authInfo:
-  // Replace this info with your application's configuration. These
-  // specific parameters will let you see what it's like to log in
-  // using SSO, but won't give you any privileges in the control
-  // system.
-  const AuthInfo(
-    clientId: "auth-demo",
-    clientSecret: "vPL2PWccDhFfbsUJjRsv5qdzJpWAhx4K",
-    realm: "acsys",
-    scopes: [],
-  ),
+      // Replace this info with your application's configuration. These
+      // specific parameters will let you see what it's like to log in
+      // using SSO, but won't give you any privileges in the control
+      // system.
+      const AuthInfo(),
 );
 
 // This is a simple, private widget that implements one item in the body of
@@ -61,7 +56,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StandardApp(
     title: _title,
-    providers: [ACSysProvider.factory()],
+    providers: [ACSysProvider.factoryUsingPort(port: 8001)],
     drawerContents: const [
       _ExampleItem(1),
       _ExampleItem(2),
