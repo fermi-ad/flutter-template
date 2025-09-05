@@ -57,12 +57,14 @@ class App extends StatelessWidget {
   Widget build(final BuildContext context) => StandardApp(
     title: _title,
     providers: [ACSysProvider.factoryUsingPort(port: 8001)],
-    drawerContents: const [
-      _ExampleItem(1),
-      _ExampleItem(2),
-      _ExampleItem(3),
-      _ExampleItem(4),
-    ],
+    drawerContent: Column(
+      children: [
+        _ExampleItem(1),
+        _ExampleItem(2),
+        _ExampleItem(3),
+        _ExampleItem(4),
+      ],
+    ),
     appBar: AppBar(title: const Text(_title)),
     body: _BaseWidget(),
   );
