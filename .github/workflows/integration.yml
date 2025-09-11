@@ -1,16 +1,18 @@
-name: Continuous Integration for Flutter applications
+name: CI (Enclosure Status)
 
 on:
   push:
-    branches:
-      - "main"
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  test:
-    uses: fermi-ad/.github/.github/workflows/flutter-integration.yaml@777af96a28515d6ff0e825a632cdb4201806c39e
+  ci:
+    uses: fermi-ad/.github/.github/workflows/flutter-integration.yaml@44dd481076c7b39cb78a4d3bbd59a21b711c24bb
     secrets: inherit
-    strategy:
-      fail-fast: false
-      matrix:
-        test: 
-          - smoke_test
+    permissions:
+      contents: write
+    with:
+      test: smoke_test # matches test/acceptance/smoke_test.dart
+
+
