@@ -24,3 +24,4 @@ RUN echo 'source ~/.bash-completion/flutter' >> ~/.bashrc
 RUN /usr/bin/flutter/bin/flutter config --enable-web && /usr/bin/flutter/bin/flutter precache --web
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROME_PATH=/usr/bin/chromium
+
