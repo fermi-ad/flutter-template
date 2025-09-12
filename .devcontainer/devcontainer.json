@@ -59,15 +59,15 @@
 	// "features": {},
   
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [5037],
+	"forwardPorts": [5000],
   
 	// Uncomment the next line to run commands after the container is created.
 	"postCreateCommand": "flutter pub get",
-	"postStartCommand": "flutter run -d web-server --web-port=5037"
+	"postStartCommand": "flutter run -d web-server --web-hostname=0.0.0.0 --web-port=5000"
   
 	// Configure tool-specific properties.
 	// "customizations": {},
   
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
-  }
+}
