@@ -59,11 +59,13 @@
 	// "features": {},
   
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [5000],
+	// ⚠ Note: 5037 is the default port for Android Debug Bridge (ADB). 
+	// If you see conflicts, change this to 5000 and update the postStartCommand accordingly.
+	"forwardPorts": [5037],
   
 	// Uncomment the next line to run commands after the container is created.
 	"postCreateCommand": "flutter pub get",
-	"postStartCommand": "flutter run -d web-server --web-hostname=0.0.0.0 --web-port=5000"
+	"postStartCommand": "flutter run -d web-server --web-hostname=0.0.0.0 --web-port=5037"
   
 	// Configure tool-specific properties.
 	// "customizations": {},
