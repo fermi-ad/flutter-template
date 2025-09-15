@@ -65,7 +65,8 @@
   
 	// Uncomment the next line to run commands after the container is created.
 	"postCreateCommand": "flutter pub get",
-	"postStartCommand": "flutter run -d web-server --web-hostname=0.0.0.0 --web-port=5037"
+	"postStartCommand": "bash -lc 'flutter run -d web-server --web-hostname=0.0.0.0 --web-port=${PORT:-5037}'"
+
   
 	// Configure tool-specific properties.
 	// "customizations": {},
