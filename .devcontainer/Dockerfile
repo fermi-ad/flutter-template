@@ -1,14 +1,10 @@
 FROM ghcr.io/browserless/chromium
 
 # Get latest Flutter
-USER root
-RUN mkdir -p /usr/bin/flutter
-RUN chown blessuser:blessuser /usr/bin/flutter -R
-
 USER blessuser
-RUN git clone -v -b stable https://github.com/flutter/flutter /usr/bin/flutter
-RUN chmod +x /usr/bin/flutter/bin/flutter
-ENV PATH="/usr/bin/flutter/bin:${PATH}"
+RUN mkdir -p ~/flutter
+RUN git clone -v -b stable https://github.com/flutter/flutter ~/flutter
+ENV PATH="/home/blessuser/flutter/bin:${PATH}"
 
 # Disable telemetry
 RUN flutter --disable-analytics
