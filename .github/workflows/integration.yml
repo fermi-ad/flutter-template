@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    uses: fermi-ad/.github/.github/workflows/flutter-integration.yaml@777af96a28515d6ff0e825a632cdb4201806c39e
+    uses: fermi-ad/.github/.github/workflows/flutter-integration.yaml@7d2f4e35d73af6e66228045945cb546719ab066f
     secrets: inherit
     strategy:
       fail-fast: false
