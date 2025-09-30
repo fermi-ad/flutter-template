@@ -1,10 +1,16 @@
 FROM ghcr.io/browserless/chromium
 
+# Install unzip
+USER root
+RUN apt-get update && apt-get install -y unzip
+RUN mkdir /flutter && chown -R 1000:1000 /flutter
+
+# Change to default user
+USER 1000
+
 # Get latest Flutter
-USER blessuser
-RUN mkdir -p ~/flutter
-RUN git clone -v -b stable https://github.com/flutter/flutter ~/flutter
-ENV PATH="/home/blessuser/flutter/bin:${PATH}"
+RUN git clone -v -b stable https://github.com/flutter/flutter /flutter
+ENV PATH="/flutter/bin:${PATH}"
 
 # Disable telemetry
 RUN flutter --disable-analytics
