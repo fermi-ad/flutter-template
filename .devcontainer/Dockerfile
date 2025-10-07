@@ -1,12 +1,13 @@
-FROM ghcr.io/browserless/chromium
+FROM redhat/ubi9-minimal
 
 # Install unzip
 USER root
-RUN apt-get update && apt-get install -y unzip
-RUN mkdir /flutter && chown -R 1000:1000 /flutter
+RUN microdnf update && microdnf install -y unzip git findutils which tar && microdnf clean all
+RUN useradd dev
+RUN mkdir /flutter && chown -R dev /flutter
 
 # Change to default user
-USER 1000
+USER dev
 
 # Get latest Flutter
 RUN git clone -v -b stable https://github.com/flutter/flutter /flutter
