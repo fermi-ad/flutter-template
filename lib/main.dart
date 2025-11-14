@@ -25,7 +25,7 @@ class _ExampleItem extends StatelessWidget {
   const _ExampleItem(this.n);
 
   @override
-  Widget build(BuildContext context) => ListTile(
+  Widget build(final BuildContext context) => ListTile(
     title: Text("Item #$n"),
     dense: true,
     onTap:
@@ -54,15 +54,17 @@ class App extends StatelessWidget {
   // Pass a list of these factories to the `providers` parameter.
 
   @override
-  Widget build(BuildContext context) => StandardApp(
+  Widget build(final BuildContext context) => StandardApp(
     title: _title,
     providers: [ACSysProvider.factoryUsingPort(port: 8001)],
-    drawerContents: const [
-      _ExampleItem(1),
-      _ExampleItem(2),
-      _ExampleItem(3),
-      _ExampleItem(4),
-    ],
+    drawerContent: Column(
+      children: [
+        _ExampleItem(1),
+        _ExampleItem(2),
+        _ExampleItem(3),
+        _ExampleItem(4),
+      ],
+    ),
     appBar: AppBar(title: const Text(_title)),
     body: _BaseWidget(),
   );
@@ -83,11 +85,11 @@ class App extends StatelessWidget {
 
 class _BaseWidget extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Center(
+  Widget build(final BuildContext context) => Center(
     child: StreamBuilder(
       stream: ACSys.api(context).monitorDevices(["G:SCTIME@P,15H"]),
       builder:
-          (context, snapshot) =>
+          (final context, final snapshot) =>
               snapshot.hasData
                   ? Text(
                     'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
