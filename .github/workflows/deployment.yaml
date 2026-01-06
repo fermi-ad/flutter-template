@@ -7,7 +7,10 @@ on:
 
 jobs:
   build-and-deploy:
-    uses: fermi-ad/.github/.github/workflows/flutter-deploy.yaml@632814634ab12be03c52ba2d4cd0b9fc308ffd9d
+    uses: fermi-ad/.github/.github/workflows/flutter-deploy.yaml@b99946ba8722aeb25ac95245fa01862054748f92
     secrets: inherit
     permissions:
       contents: write
+    # Optional: Change to true to pull in git submodules during build
+    with:
+      pull-git-submodules: false
