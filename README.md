@@ -1,6 +1,9 @@
 # flutter_controls_template
 
-A new Flutter project.
+The template repo for a new Flutter project.
+
+To use this template for a new project, click "Use this template" at the top
+right of its GitHub page. **DON'T clone the repo and commit to it!**
 
 ## Getting Started
 
@@ -14,6 +17,22 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## How-to Set Up
+
+Step-by-step instructions for how-to set up your project.
+
+Get Dart package dependencies:
+
+```
+$ flutter pub get
+```
+
+Set up the [pre-commit hook](https://pub.dev/packages/dart_pre_commit):
+
+```
+$ dart run tool/setup_git_hooks.dart
+```
 
 ## How-to Build
 
