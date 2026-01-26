@@ -53,8 +53,8 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
   # The "dart_pre_commit" package helps keep code committed to the git history
-  # clean by running a set of pre-defined checks before every commit. If any
-  # check fails, the commit is rejected. See
+  # clean and the project up-to-date by running a set of pre-defined checks
+  # before every commit. If any check fails, the commit is rejected. See
   # https://pub.dev/packages/dart_pre_commit for more information.
   dart_pre_commit: ^6.1.0
 
