@@ -17,3 +17,4 @@ jobs:
     # Change to true to pull in git submodules during build
     with:
       pull-git-submodules: false
+      coverage-exclude: "|tool/setup_git_hooks.dart"
