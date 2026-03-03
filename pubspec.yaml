@@ -117,6 +117,8 @@ flutter:
           weight: 900
           style: italic
 
+# Configuration for the pre-commit tool:
+# https://pub.dev/packages/dart_pre_commit#configuration
 dart_pre_commit:
   # # Analysis can take a while. If this isn't desired, replace the following
   # # section with:
