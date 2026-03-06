@@ -73,49 +73,7 @@ flutter:
   fonts:
     - family: Roboto
       fonts:
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-Thin.ttf
-          weight: 100
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-ThinItalic.ttf
-          weight: 100
-          style: italic
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-ExtraLight.ttf
-          weight: 200
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-ExtraLightItalic.ttf
-          weight: 200
-          style: italic
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-Light.ttf
-          weight: 300
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-LightItalic.ttf
-          weight: 300
-          style: italic
         - asset: packages/flutter_controls_core/assets/fonts/Roboto-Regular.ttf
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-Italic.ttf
-          style: italic
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-Medium.ttf
-          weight: 500
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-MediumItalic.ttf
-          weight: 500
-          style: italic
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-SemiBold.ttf
-          weight: 600
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-SemiBoldItalic.ttf
-          weight: 600
-          style: italic
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-Bold.ttf
-          weight: 700
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-ExtraBold.ttf
-          weight: 800
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-ExtraBoldItalic.ttf
-          weight: 800
-          style: italic
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-Black.ttf
-          weight: 900
-        - asset: packages/flutter_controls_core/assets/fonts/Roboto-BlackItalic.ttf
-          weight: 900
-          style: italic
 
 # Configuration for the pre-commit tool:
 # https://pub.dev/packages/dart_pre_commit#configuration
