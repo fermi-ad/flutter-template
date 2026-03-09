@@ -33,7 +33,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.8
 
   # Fermilab core utilities
   flutter_controls_core:
@@ -51,6 +51,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+  # The "dart_pre_commit" package helps keep code committed to the git history
+  # clean and the project up-to-date by running a set of pre-defined checks
+  # before every commit. If any check fails, the commit is rejected. See
+  # https://pub.dev/packages/dart_pre_commit for more information.
+  dart_pre_commit: ^6.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -93,3 +99,15 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+# Configuration for the pre-commit tool:
+# https://pub.dev/packages/dart_pre_commit#configuration
+dart_pre_commit:
+  # # Analysis can take a while. If this isn't desired, replace the following
+  # # section with:
+  # analyze: false
+  # # Remember, you can always skip pre-commit hooks by using:
+  # # git commit --no-verify
+  analyze:
+    ignore-unstaged-files: true
+  outdated: false
