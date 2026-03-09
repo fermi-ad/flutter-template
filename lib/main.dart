@@ -57,6 +57,11 @@ class App extends StatelessWidget {
   Widget build(final BuildContext context) => StandardApp(
     title: _title,
     providers: [ACSysProvider.factoryUsingPort(port: 8001)],
+
+    // Add a requirement that the user is in the "accelprgmmer" role. We will
+    // adjust the UI to reflect that the session has been granted the proper
+    // authorization.
+    neededRoles: ["accelprgmmer"],
     drawerContent: Column(
       children: [
         _ExampleItem(1),
@@ -86,15 +91,41 @@ class App extends StatelessWidget {
 class _BaseWidget extends StatelessWidget {
   @override
   Widget build(final BuildContext context) => Center(
-    child: StreamBuilder(
-      stream: ACSys.api(context).monitorDevices(["G:SCTIME@P,15H"]),
-      builder:
-          (final context, final snapshot) =>
-              snapshot.hasData
-                  ? Text(
-                    'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
-                  )
-                  : const Text('Loading...'),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        FutureBuilder(
+          future: ACSys.api(context).readDevices(["M:OUTTMP"]),
+          builder: (final context, final snapshot) {
+            if (snapshot.hasData) {
+              return Text(
+                "Outdoor Temperature: ${snapshot.data![0].value!.toDouble()!.toStringAsFixed(1)} °F",
+              );
+            } else {
+              return const Text('Loading...');
+            }
+          },
+        ),
+
+        // Only let the user see G:SCTIME if they login.
+        //
+        // NOTE: This is an example of using the roles present in the JWT to
+        // tweak the UI. However, this particular example isn't really secure
+        // in that we allow any device to be read. In a real app that used
+        // roles, the network service would also verify the user was authorized.
+        AuthService.inRole(context, "accelprgmmer")
+            ? StreamBuilder(
+              stream: ACSys.api(context).monitorDevices(["G:SCTIME@P,15H"]),
+              builder:
+                  (final context, final snapshot) =>
+                      snapshot.hasData
+                          ? Text(
+                            'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
+                          )
+                          : const Text('Loading...'),
+            )
+            : const Text("Not authorized to see G:SCTIME."),
+      ],
     ),
   );
 }
