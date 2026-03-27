@@ -235,19 +235,19 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "25ed6eaecec9f00f524ed66c1da95bf8e421a627"
+      resolved-ref: "20e64b9689effe37d0972854d7d70c9f46a26849"
       url: "https://github.com/fermi-ad/flutter-controls-auth.git"
     source: git
-    version: "0.3.0"
+    version: "0.3.1"
   flutter_controls_core:
     dependency: "direct main"
     description:
       path: "."
       ref: main
-      resolved-ref: "086c2f7f2a1b2cf96f0a96e60bdf7f0e030477ba"
+      resolved-ref: aa129b60b99409c435629e78bb561f4e1ff090bd
       url: "https://github.com/fermi-ad/flutter-controls-core.git"
     source: git
-    version: "0.3.1"
+    version: "0.4.0"
   flutter_lints:
     dependency: "direct dev"
     description:
