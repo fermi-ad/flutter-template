@@ -87,15 +87,52 @@ class App extends StatelessWidget {
 // Making a new widget means, when the `build()` method is called, the widgets
 // higher in the tree will have been added and `ACSys.api(context)` will
 // succeed.
+//
+// Since this widget uses Futures and Streams, we don't want them created over
+// and over when the widget gets rebuilt. So we use a StatefulWidget which
+// creates the Future and Stream in in the State<> object and only updates them
+// when the user's authorization status changes.
 
-class _BaseWidget extends StatelessWidget {
+class _BaseWidget extends StatefulWidget {
+  @override
+  State<_BaseWidget> createState() => _BaseWidgetState();
+}
+
+class _BaseWidgetState extends State<_BaseWidget> {
+  Future<List<Reading>>? _tempFuture;
+  Stream<Reading>? _monitorStream;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final api = ACSys.api(context);
+
+    // Cache the future so it doesn't get re-run on every rebuild of this
+    // widget.
+
+    _tempFuture ??= api.readDevices(["M:OUTTMP"]);
+
+    // AuthService.inRole(context, ...) registers the calling widget to be
+    // rebuilt when the user's role status changes (e.g., after logging in).
+
+    final bool nowAuthorized = AuthService.inRole(context, "accelprgmmer");
+
+    if (nowAuthorized != (_monitorStream != null)) {
+      setState(() {
+        _monitorStream =
+            nowAuthorized ? api.monitorDevices(["G:SCTIME"]) : null;
+      });
+    }
+  }
+
   @override
   Widget build(final BuildContext context) => Center(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         FutureBuilder(
-          future: ACSys.api(context).readDevices(["M:OUTTMP"]),
+          future: _tempFuture,
           builder: (final context, final snapshot) {
             if (snapshot.hasData) {
               return Text(
@@ -106,25 +143,19 @@ class _BaseWidget extends StatelessWidget {
             }
           },
         ),
-
-        // Only let the user see G:SCTIME if they login.
-        //
-        // NOTE: This is an example of using the roles present in the JWT to
-        // tweak the UI. However, this particular example isn't really secure
-        // in that we allow any device to be read. In a real app that used
-        // roles, the network service would also verify the user was authorized.
-        AuthService.inRole(context, "accelprgmmer")
-            ? StreamBuilder(
-              stream: ACSys.api(context).monitorDevices(["G:SCTIME@P,15H"]),
-              builder:
-                  (final context, final snapshot) =>
-                      snapshot.hasData
-                          ? Text(
-                            'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
-                          )
-                          : const Text('Loading...'),
-            )
-            : const Text("Not authorized to see G:SCTIME."),
+        if (_monitorStream != null)
+          StreamBuilder(
+            stream: _monitorStream,
+            builder:
+                (final context, final snapshot) =>
+                    snapshot.hasData
+                        ? Text(
+                          'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
+                        )
+                        : const Text('Loading...'),
+          )
+        else
+          const Text("Not authorized to see G:SCTIME."),
       ],
     ),
   );
