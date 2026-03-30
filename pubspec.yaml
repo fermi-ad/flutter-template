@@ -35,6 +35,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Web platform APIs (WasmGC-compatible, replaces dart:html).
+  web: ^1.1.1
+
   # Fermilab core utilities
   flutter_controls_core:
     git:
