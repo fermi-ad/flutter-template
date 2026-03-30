@@ -121,7 +121,7 @@ class _BaseWidgetState extends State<_BaseWidget> {
     if (nowAuthorized != (_monitorStream != null)) {
       setState(() {
         _monitorStream =
-            nowAuthorized ? api.monitorDevices(["G:SCTIME"]) : null;
+            nowAuthorized ? api.monitorDevices(["G:SCTIME@p,15h"]) : null;
       });
     }
   }
