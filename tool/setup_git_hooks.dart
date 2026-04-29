@@ -2,7 +2,7 @@
   Sets up a git pre-commit hook in .git/hooks/pre-commit that runs
   dart_pre_commit
  */
-import 'dart:io' show File, Platform, Process, stdout, stderr, exitCode;
+import 'dart:io' show File, Platform, Process, exitCode, stderr, stdout;
 
 Future<void> main() async {
   final preCommitHook = File('.git/hooks/pre-commit');
