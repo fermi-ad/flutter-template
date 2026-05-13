@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gql_acsys/flutter_gql_acsys.dart';
 import 'package:flutter_controls_core/flutter_controls_core.dart';
 
 // Entry point for the application. Use `runFermiApp` to initialize the
@@ -12,7 +13,7 @@ Future<void> main() async => runFermiApp(
       // specific parameters will let you see what it's like to log in
       // using SSO, but won't give you any privileges in the control
       // system.
-      const AuthInfo(),
+      const AuthInfo(realm: "acsys", clientId: "flutter-pkce"),
 );
 
 // This is a simple, private widget that implements one item in the body of
@@ -28,11 +29,10 @@ class _ExampleItem extends StatelessWidget {
   Widget build(final BuildContext context) => ListTile(
     title: Text("Item #$n"),
     dense: true,
-    onTap:
-        () => showDialog<()>(
-          context: context,
-          builder: (_) => AlertDialog(title: Text("You picked item #$n.")),
-        ),
+    onTap: () => showDialog<()>(
+      context: context,
+      builder: (_) => AlertDialog(title: Text("You picked item #$n.")),
+    ),
   );
 }
 
@@ -120,8 +120,9 @@ class _BaseWidgetState extends State<_BaseWidget> {
 
     if (nowAuthorized != (_monitorStream != null)) {
       setState(() {
-        _monitorStream =
-            nowAuthorized ? api.monitorDevices(["G:SCTIME@p,15h"]) : null;
+        _monitorStream = nowAuthorized
+            ? api.monitorDevices(["G:SCTIME@p,15h"])
+            : null;
       });
     }
   }
@@ -146,13 +147,11 @@ class _BaseWidgetState extends State<_BaseWidget> {
         if (_monitorStream != null)
           StreamBuilder(
             stream: _monitorStream,
-            builder:
-                (final context, final snapshot) =>
-                    snapshot.hasData
-                        ? Text(
-                          'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
-                        )
-                        : const Text('Loading...'),
+            builder: (final context, final snapshot) => snapshot.hasData
+                ? Text(
+                    'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
+                  )
+                : const Text('Loading...'),
           )
         else
           const Text("Not authorized to see G:SCTIME."),

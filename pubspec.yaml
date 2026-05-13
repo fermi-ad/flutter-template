@@ -19,7 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.3.0
 
 environment:
-  sdk: '>=3.7.0 <4.0.0'
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -39,6 +40,12 @@ dependencies:
   flutter_controls_core:
     git:
       url: https://github.com/fermi-ad/flutter-controls-core.git
+      ref: main
+
+  # Needed for ACSys GraphQL API -- used for obtaining device readings.
+  flutter_gql_acsys:
+    git:
+      url: https://github.com/fermi-ad/flutter-gql-acsys.git
       ref: main
 
 dev_dependencies:
