@@ -28,8 +28,11 @@ Get Dart package dependencies:
 $ flutter pub get
 ```
 
-Configure the project name, description, and web metadata (updates
-`web/index.html`, `web/manifest.json`, and `pubspec.yaml`):
+Configure the project name and description across all web metadata files.
+The script prompts for a **package name** (lowercase with underscores, used
+in `pubspec.yaml`) and a **display name** (human-readable, used in the
+browser title bar and PWA name — auto-derived from the package name but
+customizable). It can be re-run at any time to rename the project.
 
 ```
 $ dart run tool/rename_project.dart
