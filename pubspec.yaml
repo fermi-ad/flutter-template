@@ -20,7 +20,7 @@ version: 1.4.0
 
 environment:
   sdk: ">=3.12.0 <4.0.0"
-  flutter: ">=3.27.0"
+  flutter: '>=3.38.1'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,12 +29,12 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter:
-    sdk: flutter
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
+  flutter:
+    sdk: flutter
 
   # Fermilab core utilities
   flutter_controls_core:
@@ -48,9 +48,14 @@ dependencies:
       url: https://github.com/fermi-ad/flutter-gql-acsys.git
       ref: main
 
+  very_good_analysis: ^10.1.0
+
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  # The "dart_pre_commit" package helps keep code committed to the git history
+  # clean and the project up-to-date by running a set of pre-defined checks
+  # before every commit. If any check fails, the commit is rejected. See
+  # https://pub.dev/packages/dart_pre_commit for more information.
+  dart_pre_commit: ^6.1.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -59,11 +64,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
-  # The "dart_pre_commit" package helps keep code committed to the git history
-  # clean and the project up-to-date by running a set of pre-defined checks
-  # before every commit. If any check fails, the commit is rejected. See
-  # https://pub.dev/packages/dart_pre_commit for more information.
-  dart_pre_commit: ^6.1.0
+  flutter_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

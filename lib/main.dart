@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gql_acsys/flutter_gql_acsys.dart';
-import 'package:flutter_controls_core/flutter_controls_core.dart';
+import 'package:flutter_controls_core/flutter_controls_core.dart'
+    show
+        ACSys,
+        ACSysProvider,
+        AuthInfo,
+        AuthService,
+        FromDevValToDouble,
+        Reading,
+        StandardApp,
+        runFermiApp;
 
 // Entry point for the application. Use `runFermiApp` to initialize the
 // application's environment (set themes, prepare authentication resources,
@@ -21,24 +30,23 @@ Future<void> main() async => runFermiApp(
 // looks like with content.
 
 class _ExampleItem extends StatelessWidget {
-  final int n;
-
   const _ExampleItem(this.n);
+  final int n;
 
   @override
   Widget build(final BuildContext context) => ListTile(
-    title: Text("Item #$n"),
+    title: Text('Item #$n'),
     dense: true,
     onTap: () => showDialog<()>(
       context: context,
-      builder: (_) => AlertDialog(title: Text("You picked item #$n.")),
+      builder: (_) => AlertDialog(title: Text('You picked item #$n.')),
     ),
   );
 }
 
-// This widget is the root of the application.
-
+/// Root widget of the application.
 class App extends StatelessWidget {
+  /// Creates the root widget.
   const App({super.key});
 
   static const _title = 'Fermilab Controls Demo';
@@ -61,8 +69,8 @@ class App extends StatelessWidget {
     // Add a requirement that the user is in the "accelprgmmer" role. We will
     // adjust the UI to reflect that the session has been granted the proper
     // authorization.
-    neededRoles: ["accelprgmmer"],
-    drawerContent: Column(
+    neededRoles: const ['accelprgmmer'],
+    drawerContent: const Column(
       children: [
         _ExampleItem(1),
         _ExampleItem(2),
@@ -111,17 +119,17 @@ class _BaseWidgetState extends State<_BaseWidget> {
     // Cache the future so it doesn't get re-run on every rebuild of this
     // widget.
 
-    _tempFuture ??= api.readDevices(["M:OUTTMP"]);
+    _tempFuture ??= api.readDevices(['M:OUTTMP']);
 
     // AuthService.inRole(context, ...) registers the calling widget to be
     // rebuilt when the user's role status changes (e.g., after logging in).
 
-    final bool nowAuthorized = AuthService.inRole(context, "accelprgmmer");
+    final nowAuthorized = AuthService.inRole(context, 'accelprgmmer');
 
     if (nowAuthorized != (_monitorStream != null)) {
       setState(() {
         _monitorStream = nowAuthorized
-            ? api.monitorDevices(["G:SCTIME@p,15h"])
+            ? api.monitorDevices(['G:SCTIME@p,15h'])
             : null;
       });
     }
@@ -136,9 +144,10 @@ class _BaseWidgetState extends State<_BaseWidget> {
           future: _tempFuture,
           builder: (final context, final snapshot) {
             if (snapshot.hasData) {
-              return Text(
-                "Outdoor Temperature: ${snapshot.data![0].value!.toDouble()!.toStringAsFixed(1)} °F",
+              final temp = snapshot.data![0].value!.toDouble()!.toStringAsFixed(
+                1,
               );
+              return Text('Outdoor Temperature: $temp °F');
             } else {
               return const Text('Loading...');
             }
@@ -154,7 +163,7 @@ class _BaseWidgetState extends State<_BaseWidget> {
                 : const Text('Loading...'),
           )
         else
-          const Text("Not authorized to see G:SCTIME."),
+          const Text('Not authorized to see G:SCTIME.'),
       ],
     ),
   );
