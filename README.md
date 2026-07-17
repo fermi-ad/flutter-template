@@ -32,10 +32,10 @@ Configure the project name, description, and web metadata (updates
 `web/index.html`, `web/manifest.json`, and `pubspec.yaml`):
 
 ```
-$ dart run tool/setup_project.dart
+$ dart run tool/rename_project.dart
 ```
 
-Then replace the placeholder icons with your own branded images:
+By default, this template uses the Fermilab logo for the favicon. To replace the icons with your own desired images:
 
 | File                              | Size       | Purpose                       |
 | --------------------------------- | ---------- | ----------------------------- |
