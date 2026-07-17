@@ -28,6 +28,30 @@ Get Dart package dependencies:
 $ flutter pub get
 ```
 
+Configure the project name and description across all web metadata files.
+The script prompts for a **package name** (lowercase with underscores, used
+in `pubspec.yaml`) and a **display name** (human-readable, used in the
+browser title bar and PWA name — auto-derived from the package name but
+customizable). It can be re-run at any time to rename the project.
+
+```
+$ dart run tool/rename_project.dart
+```
+
+By default, this template uses the Fermilab logo for the favicon. To replace the icons with your own desired images:
+
+| File                              | Size       | Purpose                       |
+| --------------------------------- | ---------- | ----------------------------- |
+| `web/favicon.png`                 | 32×32 px   | Browser tab icon              |
+| `web/icons/Icon-192.png`          | 192×192 px | PWA / home screen icon        |
+| `web/icons/Icon-512.png`          | 512×512 px | PWA splash / large icon       |
+| `web/icons/Icon-maskable-192.png` | 192×192 px | Android adaptive icon         |
+| `web/icons/Icon-maskable-512.png` | 512×512 px | Android adaptive icon (large) |
+
+All icons must be **PNG** files. A 512×512 master image is sufficient to
+downscale from. For maskable icons, keep the logo within the central 80%
+"safe zone" — the outer 10% on each edge may be cropped by the OS.
+
 Set up the [pre-commit hook](https://pub.dev/packages/dart_pre_commit):
 
 ```
@@ -65,8 +89,8 @@ $ flutter run chrome
 
 This template is only set up to create web apps as that's our primary platform.
 If you want to run your app on a mobile device natively (instead of within a
-browser), you can perform the following steps. *Do not commit those changes back
-to the template repo!* It's up to you if you want to commit the mobile app support
+browser), you can perform the following steps. _Do not commit those changes back
+to the template repo!_ It's up to you if you want to commit the mobile app support
 in your repo.
 
 Once you've copied this repo (not cloned!) go in the top directory and run
