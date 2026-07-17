@@ -213,19 +213,19 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: f24804541173d19fff02f9693bc6799ee2ff501a
+      resolved-ref: "3dc8e3a387d73616a504bdcb18f9f36b2caff387"
       url: "https://github.com/fermi-ad/flutter-controls-auth.git"
     source: git
-    version: "0.5.0"
+    version: "0.6.0"
   flutter_controls_core:
     dependency: "direct main"
     description:
       path: "."
       ref: main
-      resolved-ref: "9024c11046ca982349bf0d86dc00c78f1de79102"
+      resolved-ref: "1d5f92a6f6af2fcbe5ce1075d00f254c08fc7376"
       url: "https://github.com/fermi-ad/flutter-controls-core.git"
     source: git
-    version: "1.1.1"
+    version: "1.1.2"
   flutter_gql_acsys:
     dependency: "direct main"
     description:

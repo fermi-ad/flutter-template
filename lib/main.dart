@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gql_acsys/flutter_gql_acsys.dart';
 import 'package:flutter_controls_core/flutter_controls_core.dart'
-    show
-        ACSys,
-        ACSysProvider,
-        AuthInfo,
-        AuthService,
-        FromDevValToDouble,
-        Reading,
-        StandardApp,
-        runFermiApp;
+    show AuthInfo, AuthService, StandardApp, runFermiApp;
+import 'package:flutter_gql_acsys/flutter_gql_acsys.dart';
 
 // Entry point for the application. Use `runFermiApp` to initialize the
 // application's environment (set themes, prepare authentication resources,
@@ -22,7 +14,7 @@ Future<void> main() async => runFermiApp(
       // specific parameters will let you see what it's like to log in
       // using SSO, but won't give you any privileges in the control
       // system.
-      const AuthInfo(realm: "acsys", clientId: "flutter-pkce"),
+      const AuthInfo(realm: 'acsys', clientId: 'flutter-pkce'),
 );
 
 // This is a simple, private widget that implements one item in the body of
@@ -144,7 +136,7 @@ class _BaseWidgetState extends State<_BaseWidget> {
           future: _tempFuture,
           builder: (final context, final snapshot) {
             if (snapshot.hasData) {
-              final temp = snapshot.data![0].value!.toDouble()!.toStringAsFixed(
+              final temp = snapshot.data![0].value.toDouble()!.toStringAsFixed(
                 1,
               );
               return Text('Outdoor Temperature: $temp °F');
@@ -156,11 +148,17 @@ class _BaseWidgetState extends State<_BaseWidget> {
         if (_monitorStream != null)
           StreamBuilder(
             stream: _monitorStream,
-            builder: (final context, final snapshot) => snapshot.hasData
-                ? Text(
-                    'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
-                  )
-                : const Text('Loading...'),
+            builder: (final context, final snapshot) {
+              if (snapshot.hasData) {
+                final supercycleTime = snapshot.data!.value
+                    .toDouble()!
+                    .toStringAsFixed(2);
+
+                return Text('Supercycle time: $supercycleTime');
+              } else {
+                return const Text('Loading...');
+              }
+            },
           )
         else
           const Text('Not authorized to see G:SCTIME.'),
