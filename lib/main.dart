@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gql_acsys/flutter_gql_acsys.dart';
 import 'package:flutter_controls_core/flutter_controls_core.dart'
     show
         ACSys,
@@ -21,7 +22,7 @@ Future<void> main() async => runFermiApp(
       // specific parameters will let you see what it's like to log in
       // using SSO, but won't give you any privileges in the control
       // system.
-      const AuthInfo(),
+      const AuthInfo(realm: "acsys", clientId: "flutter-pkce"),
 );
 
 // This is a simple, private widget that implements one item in the body of
@@ -155,13 +156,11 @@ class _BaseWidgetState extends State<_BaseWidget> {
         if (_monitorStream != null)
           StreamBuilder(
             stream: _monitorStream,
-            builder: (final context, final snapshot) {
-              if (!snapshot.hasData) return const Text('Loading...');
-              final sctime = snapshot.data!.value!.toDouble()!.toStringAsFixed(
-                2,
-              );
-              return Text('Supercycle time: $sctime');
-            },
+            builder: (final context, final snapshot) => snapshot.hasData
+                ? Text(
+                    'Supercycle time: ${snapshot.data!.value!.toDouble()!.toStringAsFixed(2)}',
+                  )
+                : const Text('Loading...'),
           )
         else
           const Text('Not authorized to see G:SCTIME.'),
