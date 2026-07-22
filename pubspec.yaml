@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.4.0
+version: 1.4.1
 
 environment:
   sdk: ">=3.12.0 <4.0.0"
@@ -48,21 +48,14 @@ dependencies:
       url: https://github.com/fermi-ad/flutter-gql-acsys.git
       ref: main
 
-  very_good_analysis: ^10.1.0
-
 dev_dependencies:
   # The "dart_pre_commit" package helps keep code committed to the git history
   # clean and the project up-to-date by running a set of pre-defined checks
   # before every commit. If any check fails, the commit is rejected. See
   # https://pub.dev/packages/dart_pre_commit for more information.
   dart_pre_commit: ^6.1.0
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  very_good_analysis: ^10.1.0
 
   flutter_test:
     sdk: flutter
