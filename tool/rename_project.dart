@@ -108,7 +108,7 @@ Future<void> main() async {
 
 /// Converts a package name (underscores) to a title-cased display name.
 /// Example: "my_cool_app" → "My Cool App"
-String _toDisplayName(final String packageName) {
+String _toDisplayName(String packageName) {
   return packageName
       .split('_')
       .map(
@@ -141,10 +141,10 @@ Future<(String, String)?> _readCurrentValues() async {
 
 /// Updates [_pubspecPath] with the new package name and description.
 Future<bool> _updatePubspec({
-  required final String oldPackageName,
-  required final String newPackageName,
-  required final String oldDescription,
-  required final String newDescription,
+  required String oldPackageName,
+  required String newPackageName,
+  required String oldDescription,
+  required String newDescription,
 }) async {
   return _replaceInFile(
     path: _pubspecPath,
@@ -166,10 +166,10 @@ Future<bool> _updatePubspec({
 
 /// Updates [_manifestPath] with the new display name and description.
 Future<bool> _updateManifest({
-  required final String oldDisplayName,
-  required final String newDisplayName,
-  required final String oldDescription,
-  required final String newDescription,
+  required String oldDisplayName,
+  required String newDisplayName,
+  required String oldDescription,
+  required String newDescription,
 }) async {
   return _replaceInFile(
     path: _manifestPath,
@@ -192,10 +192,10 @@ Future<bool> _updateManifest({
 
 /// Updates [_indexPath] with the new display name and description.
 Future<bool> _updateIndexHtml({
-  required final String oldDisplayName,
-  required final String newDisplayName,
-  required final String oldDescription,
-  required final String newDescription,
+  required String oldDisplayName,
+  required String newDisplayName,
+  required String oldDescription,
+  required String newDescription,
 }) async {
   return _replaceInFile(
     path: _indexPath,
@@ -223,8 +223,8 @@ Future<bool> _updateIndexHtml({
 /// Applies a list of regex [replacements] to the file at [path].
 /// Returns true on success.
 Future<bool> _replaceInFile({
-  required final String path,
-  required final List<(RegExp, String)> replacements,
+  required String path,
+  required List<(RegExp, String)> replacements,
 }) async {
   final file = File(path);
   if (!file.existsSync()) {
@@ -249,10 +249,10 @@ Future<bool> _replaceInFile({
 /// Prompts the user for input. Pressing Enter with no input returns
 /// [defaultValue]. Repeats until [validate] passes (if provided).
 String _prompt(
-  final String message, {
-  required final String defaultValue,
-  final bool Function(String)? validate,
-  final String? validationMessage,
+  String message, {
+  required String defaultValue,
+  bool Function(String)? validate,
+  String? validationMessage,
 }) {
   while (true) {
     stdout.write(message);
@@ -269,6 +269,6 @@ String _prompt(
 
 /// Returns true if [name] is a valid Dart package identifier:
 /// lowercase letters, digits, and underscores; must not start with a digit.
-bool _isValidDartPackageName(final String name) {
+bool _isValidDartPackageName(String name) {
   return RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name);
 }
