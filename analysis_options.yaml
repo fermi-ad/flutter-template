@@ -5,6 +5,9 @@ include:
   - package:very_good_analysis/analysis_options.yaml
 
 analyzer:
+  exclude:
+    - build/**
+    - web/**
   language:
     strict-casts: true
     strict-inference: true
@@ -16,10 +19,11 @@ linter:
     prefer_final_locals: true
     prefer_final_in_for_each: true
     avoid_final_parameters: false
+    parameter_assignments: true
 
 plugins:
   explicit_imports:
-    version: ^1.0.4
+    version: ^2.1.0
     diagnostics:
       explicit_dart_imports: true
       explicit_flutter_imports: false
