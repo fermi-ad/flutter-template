@@ -1,32 +1,47 @@
 /*
-  Configures a project's name and description across all relevant web files.
-  Can be run at initial setup or any time the app name/description needs to
-  change. Reads the current values from pubspec.yaml and replaces them in:
-    - pubspec.yaml       name (package identifier, underscores required)
-                         description
-    - web/manifest.json  name, short_name (display names, spaces allowed)
-                         description
-    - web/index.html     <title>, apple-mobile-web-app-title (display names)
-                         meta description
+  Configures a Flutter web project's name and description.
+
+  Updates only web application metadata and the package metadata used to
+  generate it:
+    - pubspec.yaml: name and description
+    - web/manifest.json: name, short_name, and description
+    - web/index.html: title, Apple web-app title, and description meta tag
+
+  Native platform files and SDK/plugin versions are intentionally out of scope.
 
   Usage:
     dart run tool/rename_project.dart
 */
+import 'dart:convert' show JsonEncoder, jsonDecode;
 import 'dart:io' show File, exitCode, stderr, stdin, stdout;
 
 const _pubspecPath = 'pubspec.yaml';
 const _manifestPath = 'web/manifest.json';
 const _indexPath = 'web/index.html';
 
-Future<void> main() async {
-  stdout.writeln('=== Flutter Project Rename ===\n');
+class _PreparedFile {
+  const _PreparedFile(this.path, this.contents);
 
-  // Read current values from pubspec.yaml as the source of truth.
+  final String path;
+  final String contents;
+}
+
+class _PreparationResult {
+  const _PreparationResult.success([this.file]) : succeeded = true;
+  const _PreparationResult.failure() : succeeded = false, file = null;
+
+  final bool succeeded;
+  final _PreparedFile? file;
+}
+
+Future<void> main() async {
+  stdout.writeln('=== Flutter Web Project Rename ===\n');
+
   final currentValues = await _readCurrentValues();
   if (currentValues == null) {
     stderr.writeln(
       'Could not parse current name/description from $_pubspecPath. '
-      'Ensure the file exists and contains "name:" and "description:" fields.',
+      'Ensure the file contains string "name" and "description" fields.',
     );
     exitCode = 1;
     return;
@@ -49,205 +64,254 @@ Future<void> main() async {
         'Name must be lowercase letters, digits, and underscores only, '
         'and must not start with a digit.',
   );
-
   final defaultDisplayName = _toDisplayName(newPackageName);
   final newDisplayName = _prompt(
     'Enter display name (shown in browser/PWA) [$defaultDisplayName]: ',
     defaultValue: defaultDisplayName,
+    validate: (value) => value.isNotEmpty && !value.contains('\n'),
+    validationMessage: 'Display name must be a non-empty single line.',
   );
-
   final newDescription = _prompt(
     'Enter description [$currentDescription]: ',
     defaultValue: currentDescription,
+    validate: (value) => !value.contains('\n'),
+    validationMessage: 'Description must be a single line.',
   );
 
-  final nameUnchanged =
-      newPackageName == currentPackageName &&
-      newDisplayName == currentDisplayName;
-  if (nameUnchanged && newDescription == currentDescription) {
+  if (newPackageName == currentPackageName &&
+      newDisplayName == currentDisplayName &&
+      newDescription == currentDescription) {
     stdout.writeln('\nNo changes made (values are unchanged).');
     return;
   }
 
   stdout.writeln('\nUpdating files...');
-
+  final files = <String, String>{};
   var allSucceeded = true;
 
-  allSucceeded &= await _updatePubspec(
-    oldPackageName: currentPackageName,
-    newPackageName: newPackageName,
-    oldDescription: currentDescription,
-    newDescription: newDescription,
-  );
-
-  allSucceeded &= await _updateManifest(
-    oldDisplayName: currentDisplayName,
-    newDisplayName: newDisplayName,
-    oldDescription: currentDescription,
-    newDescription: newDescription,
-  );
-
-  allSucceeded &= await _updateIndexHtml(
-    oldDisplayName: currentDisplayName,
-    newDisplayName: newDisplayName,
-    oldDescription: currentDescription,
-    newDescription: newDescription,
-  );
-
-  if (allSucceeded) {
-    stdout
-      ..writeln('\nDone! Project updated successfully.')
-      ..writeln('  Package name: $newPackageName')
-      ..writeln('  Display name: $newDisplayName')
-      ..writeln('  Description:  $newDescription');
-  } else {
-    stderr.writeln('\nRename completed with errors. See above for details.');
-    exitCode = 1;
+  final results = [
+    await _preparePubspec(
+      newPackageName: newPackageName,
+      newDescription: newDescription,
+    ),
+    await _prepareManifest(
+      newDisplayName: newDisplayName,
+      newDescription: newDescription,
+    ),
+    await _prepareIndexHtml(
+      newDisplayName: newDisplayName,
+      newDescription: newDescription,
+    ),
+  ];
+  for (final result in results) {
+    allSucceeded = allSucceeded && result.succeeded;
+    final file = result.file;
+    if (file != null) files[file.path] = file.contents;
   }
+
+  if (!allSucceeded) {
+    stderr.writeln('\nRename aborted; no files were changed.');
+    exitCode = 1;
+    return;
+  }
+
+  try {
+    for (final entry in files.entries) {
+      await File(entry.key).writeAsString(entry.value);
+      stdout.writeln('  [OK]   ${entry.key}');
+    }
+  } on Exception catch (error) {
+    stderr.writeln('  [ERR]  Could not write files — $error');
+    exitCode = 1;
+    return;
+  }
+
+  stdout
+    ..writeln('\nDone! Flutter web project updated successfully.')
+    ..writeln('  Package name: $newPackageName')
+    ..writeln('  Display name: $newDisplayName')
+    ..writeln('  Description:  $newDescription');
 }
 
-/// Converts a package name (underscores) to a title-cased display name.
-/// Example: "my_cool_app" → "My Cool App"
-String _toDisplayName(String packageName) {
-  return packageName
-      .split('_')
-      .map(
-        (word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1),
-      )
-      .join(' ');
-}
+String _toDisplayName(String packageName) => packageName
+    .split('_')
+    .map(
+      (word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1),
+    )
+    .join(' ');
 
-/// Reads the current package name and description from [_pubspecPath].
-/// Returns null if either field cannot be found.
 Future<(String, String)?> _readCurrentValues() async {
   final file = File(_pubspecPath);
   if (!file.existsSync()) return null;
 
   final contents = await file.readAsString();
+  final name = _readTopLevelScalar(contents, 'name');
+  final description = _readTopLevelScalar(contents, 'description');
+  if (name == null || description == null || name.isEmpty) return null;
+  return (name, description);
+}
 
-  final nameMatch = RegExp(
-    r'^name:\s*(\S+)',
+/// Reads the single-line scalar fields owned by this tool without adding a
+/// YAML package dependency to every application generated from the template.
+String? _readTopLevelScalar(String contents, String key) {
+  final match = RegExp(
+    '^$key:'
+    r'\s*(.+?)\s*\r?$',
     multiLine: true,
   ).firstMatch(contents);
-  final descMatch = RegExp(
-    r'^description:\s*(.+)',
-    multiLine: true,
-  ).firstMatch(contents);
+  if (match == null) return null;
 
-  if (nameMatch == null || descMatch == null) return null;
-
-  return (nameMatch.group(1)!.trim(), descMatch.group(1)!.trim());
-}
-
-/// Updates [_pubspecPath] with the new package name and description.
-Future<bool> _updatePubspec({
-  required String oldPackageName,
-  required String newPackageName,
-  required String oldDescription,
-  required String newDescription,
-}) async {
-  return _replaceInFile(
-    path: _pubspecPath,
-    replacements: [
-      (
-        RegExp('^name: ${RegExp.escape(oldPackageName)}', multiLine: true),
-        'name: $newPackageName',
-      ),
-      (
-        RegExp(
-          '^description: ${RegExp.escape(oldDescription)}',
-          multiLine: true,
-        ),
-        'description: $newDescription',
-      ),
-    ],
-  );
-}
-
-/// Updates [_manifestPath] with the new display name and description.
-Future<bool> _updateManifest({
-  required String oldDisplayName,
-  required String newDisplayName,
-  required String oldDescription,
-  required String newDescription,
-}) async {
-  return _replaceInFile(
-    path: _manifestPath,
-    replacements: [
-      (
-        RegExp('"name":\\s*"${RegExp.escape(oldDisplayName)}"'),
-        '"name": "$newDisplayName"',
-      ),
-      (
-        RegExp('"short_name":\\s*"${RegExp.escape(oldDisplayName)}"'),
-        '"short_name": "$newDisplayName"',
-      ),
-      (
-        RegExp('"description":\\s*"${RegExp.escape(oldDescription)}"'),
-        '"description": "$newDescription"',
-      ),
-    ],
-  );
-}
-
-/// Updates [_indexPath] with the new display name and description.
-Future<bool> _updateIndexHtml({
-  required String oldDisplayName,
-  required String newDisplayName,
-  required String oldDescription,
-  required String newDescription,
-}) async {
-  return _replaceInFile(
-    path: _indexPath,
-    replacements: [
-      (
-        RegExp(
-          'content="${RegExp.escape(oldDisplayName)}"',
-        ),
-        'content="$newDisplayName"',
-      ),
-      (
-        RegExp('<title>${RegExp.escape(oldDisplayName)}</title>'),
-        '<title>$newDisplayName</title>',
-      ),
-      (
-        RegExp(
-          'name="description" content="${RegExp.escape(oldDescription)}"',
-        ),
-        'name="description" content="$newDescription"',
-      ),
-    ],
-  );
-}
-
-/// Applies a list of regex [replacements] to the file at [path].
-/// Returns true on success.
-Future<bool> _replaceInFile({
-  required String path,
-  required List<(RegExp, String)> replacements,
-}) async {
-  final file = File(path);
-  if (!file.existsSync()) {
-    stdout.writeln('  [SKIP] $path — file not found.');
-    return true; // Not a hard failure; file may not exist in all forks.
+  final value = match.group(1)!.trim();
+  if (value.length >= 2 && value.startsWith("'") && value.endsWith("'")) {
+    return value.substring(1, value.length - 1).replaceAll("''", "'");
+  }
+  if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
+    try {
+      final decoded = jsonDecode(value);
+      return decoded is String ? decoded : null;
+    } on FormatException {
+      return null;
+    }
   }
 
+  // A # begins a YAML comment only when preceded by whitespace.
+  final commentStart = RegExp(r'\s#').firstMatch(value)?.start;
+  return (commentStart == null ? value : value.substring(0, commentStart))
+      .trim();
+}
+
+Future<_PreparationResult> _preparePubspec({
+  required String newPackageName,
+  required String newDescription,
+}) async {
+  final file = File(_pubspecPath);
+  if (!file.existsSync()) {
+    _reportError(_pubspecPath, 'file not found');
+    return const _PreparationResult.failure();
+  }
+  try {
+    final contents = await file.readAsString();
+    final namePattern = RegExp(r'^name:\s*.*$', multiLine: true);
+    final descriptionPattern = RegExp(r'^description:\s*.*$', multiLine: true);
+    if (!namePattern.hasMatch(contents) ||
+        !descriptionPattern.hasMatch(contents)) {
+      _reportError(_pubspecPath, 'expected name/description field not found');
+      return const _PreparationResult.failure();
+    }
+    final updated = contents
+        .replaceFirst(namePattern, 'name: $newPackageName')
+        .replaceFirst(
+          descriptionPattern,
+          'description: ${yamlSingleQuoted(newDescription)}',
+        );
+    return _PreparationResult.success(_PreparedFile(_pubspecPath, updated));
+  } on Exception catch (error) {
+    _reportError(_pubspecPath, error.toString());
+    return const _PreparationResult.failure();
+  }
+}
+
+Future<_PreparationResult> _prepareManifest({
+  required String newDisplayName,
+  required String newDescription,
+}) async {
+  final file = File(_manifestPath);
+  if (!file.existsSync()) {
+    stdout.writeln('  [SKIP] $_manifestPath — file not found.');
+    return const _PreparationResult.success();
+  }
+  try {
+    final decoded = jsonDecode(await file.readAsString());
+    if (decoded is! Map<String, dynamic>) {
+      throw const FormatException('root must be an object');
+    }
+    for (final key in ['name', 'short_name', 'description']) {
+      if (!decoded.containsKey(key)) {
+        _reportError(_manifestPath, 'required field "$key" not found');
+        return const _PreparationResult.failure();
+      }
+    }
+    decoded['name'] = newDisplayName;
+    decoded['short_name'] = newDisplayName;
+    decoded['description'] = newDescription;
+    final encoded = const JsonEncoder.withIndent('    ').convert(decoded);
+    return _PreparationResult.success(
+      _PreparedFile(_manifestPath, '$encoded\n'),
+    );
+  } on Exception catch (error) {
+    _reportError(_manifestPath, 'invalid JSON — $error');
+    return const _PreparationResult.failure();
+  }
+}
+
+Future<_PreparationResult> _prepareIndexHtml({
+  required String newDisplayName,
+  required String newDescription,
+}) async {
+  final file = File(_indexPath);
+  if (!file.existsSync()) {
+    stdout.writeln('  [SKIP] $_indexPath — file not found.');
+    return const _PreparationResult.success();
+  }
   try {
     var contents = await file.readAsString();
-    for (final (pattern, replacement) in replacements) {
-      contents = contents.replaceAll(pattern, replacement);
+    final titlePattern = RegExp('<title>[^<]*</title>', caseSensitive: false);
+    final appleTitlePattern = RegExp(
+      r'''(<meta\s+name=["']apple-mobile-web-app-title["']\s+content=["'])[^"']*(["'])''',
+      caseSensitive: false,
+    );
+    final descriptionPattern = RegExp(
+      r'''(<meta\s+name=["']description["']\s+content=["'])[^"']*(["'])''',
+      caseSensitive: false,
+    );
+
+    if (!titlePattern.hasMatch(contents)) {
+      _reportError(_indexPath, 'title element not found');
+      return const _PreparationResult.failure();
     }
-    await file.writeAsString(contents);
-    stdout.writeln('  [OK]   $path');
-    return true;
-  } on Exception catch (e) {
-    stderr.writeln('  [ERR]  $path — $e');
-    return false;
+    contents = contents.replaceFirst(
+      titlePattern,
+      '<title>${htmlEscape(newDisplayName)}</title>',
+    );
+    for (final (pattern, value) in [
+      (appleTitlePattern, newDisplayName),
+      (descriptionPattern, newDescription),
+    ]) {
+      if (!pattern.hasMatch(contents)) {
+        _reportError(_indexPath, 'expected metadata field not found');
+        return const _PreparationResult.failure();
+      }
+      contents = contents.replaceFirstMapped(
+        pattern,
+        (match) => '${match.group(1)}${htmlEscape(value)}${match.group(2)}',
+      );
+    }
+    return _PreparationResult.success(_PreparedFile(_indexPath, contents));
+  } on Exception catch (error) {
+    _reportError(_indexPath, error.toString());
+    return const _PreparationResult.failure();
   }
 }
 
-/// Prompts the user for input. Pressing Enter with no input returns
-/// [defaultValue]. Repeats until [validate] passes (if provided).
+/// Encodes a single-line YAML value without allowing punctuation to change its
+/// meaning.
+String yamlSingleQuoted(String value) => "'${value.replaceAll("'", "''")}'";
+
+/// Escapes text for use in HTML text and attribute contexts.
+String htmlEscape(String value) => value
+    .replaceAll('&', String.fromCharCodes([38, 97, 109, 112, 59]))
+    .replaceAll('<', String.fromCharCodes([38, 108, 116, 59]))
+    .replaceAll('>', String.fromCharCodes([38, 103, 116, 59]))
+    .replaceAll(
+      '"',
+      String.fromCharCodes([38, 113, 117, 111, 116, 59]),
+    )
+    .replaceAll("'", String.fromCharCodes([38, 35, 51, 57, 59]));
+
+void _reportError(String path, String message) {
+  stderr.writeln('  [ERR]  $path — $message');
+}
+
 String _prompt(
   String message, {
   required String defaultValue,
@@ -258,7 +322,6 @@ String _prompt(
     stdout.write(message);
     final raw = stdin.readLineSync()?.trim() ?? '';
     final input = raw.isEmpty ? defaultValue : raw;
-
     if (validate != null && !validate(input)) {
       stderr.writeln(validationMessage ?? 'Invalid input. Please try again.');
       continue;
@@ -267,8 +330,5 @@ String _prompt(
   }
 }
 
-/// Returns true if [name] is a valid Dart package identifier:
-/// lowercase letters, digits, and underscores; must not start with a digit.
-bool _isValidDartPackageName(String name) {
-  return RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name);
-}
+bool _isValidDartPackageName(String name) =>
+    RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name);
