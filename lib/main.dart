@@ -51,7 +51,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StandardApp(
     title: _title,
-    providers: [ACSysProvider.factoryUsingPort(port: 8001)],
+    // Use the package's default ACSys endpoint. The currently resolved
+    // flutter_gql_acsys release accepts a port in factoryUsingPort(), but does
+    // not pass that port to ACSysService, so using it here would be misleading.
+    providers: [ACSysProvider.factory()],
 
     authInfo: const AuthInfo(realm: 'acsys', clientId: 'flutter-pkce'),
     // Add a requirement that the user is in the "accelprgmmer" role. We will
