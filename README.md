@@ -1,42 +1,69 @@
 # flutter_controls_template
 
-The template repo for a new Flutter project.
+The template repo for a new Flutter web application.
 
 To use this template for a new project, click "Use this template" at the top
 right of its GitHub page. **DON'T clone the repo and commit to it!**
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is a starting point for a Flutter web application.
 
-A few resources to get you started if this is your first Flutter project:
+A few resources to get started with Flutter:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Flutter documentation](https://docs.flutter.dev/)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Prerequisites
+
+- Flutter installed from the [official installation guide](https://docs.flutter.dev/get-started/install).
+- Flutter on the stable channel.
+- A Flutter SDK compatible with the `environment` constraints in `pubspec.yaml`.
+- A supported browser, such as Chrome or Edge.
+
+Verify the local installation before setup:
+
+```shell
+flutter --version
+flutter doctor
+```
+
+This template targets **Flutter web applications**. Native platform metadata and
+native plugin configuration for iOS, Android, Windows, macOS, and Linux are
+intentionally outside the scope of this template and its rename tool. If native
+platforms are added later, configure their application identifiers and display
+metadata separately using Flutter's platform documentation.
 
 ## How-to Set Up
 
-Step-by-step instructions for how-to set up your project.
-
 Get Dart package dependencies:
 
-```
-$ flutter pub get
+```shell
+flutter pub get
 ```
 
-Configure the project name and description across all web metadata files.
-The script prompts for a **package name** (lowercase with underscores, used
-in `pubspec.yaml`) and a **display name** (human-readable, used in the
+Configure the project name and description across the supported web metadata
+files. The script prompts for a **package name** (lowercase with underscores,
+used in `pubspec.yaml`) and a **display name** (human-readable, used in the
 browser title bar and PWA name — auto-derived from the package name but
 customizable). It can be re-run at any time to rename the project.
 
+```shell
+dart run tool/rename_project.dart
 ```
-$ dart run tool/rename_project.dart
-```
+
+The rename tool updates only:
+
+- `pubspec.yaml`: package name and description;
+- `web/manifest.json`: PWA name, short name, and description;
+- `web/index.html`: browser title, Apple web-app title, and description meta tag.
+
+Values are escaped for YAML, JSON, and HTML. The tool validates the expected
+metadata fields before writing, and aborts without writing if a required field
+is missing or a target file is malformed. It does not upgrade SDKs, plugins, or
+other dependencies. If dependency resolution fails, use `flutter pub outdated`
+and the official Flutter/package documentation to resolve that separately.
 
 By default, this template uses the Fermilab logo for the favicon. To replace the icons with your own desired images:
 
@@ -54,8 +81,8 @@ downscale from. For maskable icons, keep the logo within the central 80%
 
 Set up the [pre-commit hook](https://pub.dev/packages/dart_pre_commit):
 
-```
-$ dart run tool/setup_git_hooks.dart
+```shell
+dart run tool/setup_git_hooks.dart
 ```
 
 ## How-to Build
@@ -64,66 +91,19 @@ Step-by-step instructions for how-to build your project.
 
 ## How-to Test
 
-Each `.dart` file in the `test` subdirectory tree will be run. In each file,
-you define tests to run against the public API of your application. You can
-run the tests from the command line using:
+Each `.dart` file in the `test` subdirectory tree will be run. Run the tests with:
 
+```shell
+flutter test
 ```
-$ flutter test
-```
-
-If you are using VSCode as your development environment (highly recommended!),
-you can use the "Testing" tab (on the left navigation rail) to choose which
-test to run.
 
 ## How-to Run
 
-We consider web applications to be our primary target. To run this demo app
-in a browser, use the following command in your system's shell:
+We consider web applications to be our primary target. To run this app in a browser:
 
-```
-$ flutter run chrome
-```
-
-### Mobile Targets
-
-This template is only set up to create web apps as that's our primary platform.
-If you want to run your app on a mobile device natively (instead of within a
-browser), you can perform the following steps. _Do not commit those changes back
-to the template repo!_ It's up to you if you want to commit the mobile app support
-in your repo.
-
-Once you've copied this repo (not cloned!) go in the top directory and run
-
-```
-$ flutter create --platforms ios .
+```shell
+flutter run chrome
 ```
 
-to add iOS as a target. You can only build iOS apps if you have XCode installed.
-This also implies you can only do this on a Macintosh computer.
-
-For Android targets, run
-
-```
-$ flutter create --platforms android .
-```
-
-Mobile device manufacturers try very hard to secure their devices so applications
-need to specify which services they intend to use and the user can approve their
-request(s) when running it for the first time. Since our framework uses network
-services, you need to request network permissions in your app's config.
-
-For Android targets, add the following tag to your `AndroidManifest.xml` file,
-immediately after the opening `manifest` tag:
-
-```
-<uses-permission android:name="android.permission.INTERNET" />
-```
-
-For iOS targets, you need to open the `.xcodeproj` file in `XCode` and add the
-permissions for network access in the application's profile. The appropriate
-`.xml` files will be modified.
-
-## How-to Deploy
-
-Step-by-step instructions for how-to deploy your project to ad-apps.
+For help getting started with Flutter web, view the
+[Flutter web documentation](https://docs.flutter.dev/platform-integration/web).

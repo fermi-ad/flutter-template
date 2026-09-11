@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_controls_core/flutter_controls_core.dart'
     show AuthInfo, AuthService, StandardApp, runFermiApp;
-import 'package:flutter_gql_acsys/flutter_gql_acsys.dart';
+import 'package:flutter_gql_acsys/flutter_gql_acsys.dart'
+    show ACSys, ACSysProvider, FromDeviceValue, Reading;
 
 // Entry point for the application. Use `runFermiApp` to initialize the
 // application's environment (set themes, prepare authentication resources,
@@ -9,12 +10,6 @@ import 'package:flutter_gql_acsys/flutter_gql_acsys.dart';
 
 Future<void> main() async => runFermiApp(
   appWidget: const App(),
-  authInfo:
-      // Replace this info with your application's configuration. These
-      // specific parameters will let you see what it's like to log in
-      // using SSO, but won't give you any privileges in the control
-      // system.
-      const AuthInfo(realm: 'acsys', clientId: 'flutter-pkce'),
 );
 
 // This is a simple, private widget that implements one item in the body of
@@ -26,7 +21,7 @@ class _ExampleItem extends StatelessWidget {
   final int n;
 
   @override
-  Widget build(final BuildContext context) => ListTile(
+  Widget build(BuildContext context) => ListTile(
     title: Text('Item #$n'),
     dense: true,
     onTap: () => showDialog<()>(
@@ -54,10 +49,14 @@ class App extends StatelessWidget {
   // Pass a list of these factories to the `providers` parameter.
 
   @override
-  Widget build(final BuildContext context) => StandardApp(
+  Widget build(BuildContext context) => StandardApp(
     title: _title,
-    providers: [ACSysProvider.factoryUsingPort(port: 8001)],
+    // Use the package's default ACSys endpoint. The currently resolved
+    // flutter_gql_acsys release accepts a port in factoryUsingPort(), but does
+    // not pass that port to ACSysService, so using it here would be misleading.
+    providers: [ACSysProvider.factory()],
 
+    authInfo: const AuthInfo(realm: 'acsys', clientId: 'flutter-pkce'),
     // Add a requirement that the user is in the "accelprgmmer" role. We will
     // adjust the UI to reflect that the session has been granted the proper
     // authorization.
@@ -128,13 +127,13 @@ class _BaseWidgetState extends State<_BaseWidget> {
   }
 
   @override
-  Widget build(final BuildContext context) => Center(
+  Widget build(BuildContext context) => Center(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         FutureBuilder(
           future: _tempFuture,
-          builder: (final context, final snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasData) {
               final temp = snapshot.data![0].value.toDouble()!.toStringAsFixed(
                 1,
@@ -148,7 +147,7 @@ class _BaseWidgetState extends State<_BaseWidget> {
         if (_monitorStream != null)
           StreamBuilder(
             stream: _monitorStream,
-            builder: (final context, final snapshot) {
+            builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final supercycleTime = snapshot.data!.value
                     .toDouble()!
