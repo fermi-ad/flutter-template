@@ -19,7 +19,7 @@ class const _ExampleItem(final int n) extends StatelessWidget {
   Widget build(BuildContext context) => ListTile(
     title: Text('Item #$n'),
     dense: true,
-    onTap: () => showDialog<()>(
+    onTap: () => showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(title: Text('You picked item #$n.')),
     ),
