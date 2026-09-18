@@ -8,9 +8,7 @@ import 'package:flutter_gql_acsys/flutter_gql_acsys.dart'
 // application's environment (set themes, prepare authentication resources,
 // etc.)
 
-Future<void> main() async => runFermiApp(
-  appWidget: const App(),
-);
+Future<void> main() => runFermiApp(appWidget: const App());
 
 // This is a simple, private widget that implements one item in the body of
 // the drawer. This demo creates several of these widgets to show how a drawer
