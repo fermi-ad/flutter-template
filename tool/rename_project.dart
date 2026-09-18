@@ -331,5 +331,6 @@ String _prompt(
   }
 }
 
-bool _isValidDartPackageName(String name) =>
-    RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name);
+final _dartPackagePattern = RegExp(r'^[a-z][a-z0-9_]*$');
+
+bool _isValidDartPackageName(String name) => _dartPackagePattern.hasMatch(name);
