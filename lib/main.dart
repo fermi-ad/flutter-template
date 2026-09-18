@@ -87,7 +87,7 @@ class const App({super.key}) extends StatelessWidget {
 
 class const _BaseWidget() extends StatefulWidget {
   @override
-  State<_BaseWidget> createState() => _BaseWidgetState();
+  _BaseWidgetState createState() => _BaseWidgetState();
 }
 
 class _BaseWidgetState extends State<_BaseWidget> {
