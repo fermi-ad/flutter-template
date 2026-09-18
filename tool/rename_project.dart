@@ -19,16 +19,11 @@ const _pubspecPath = 'pubspec.yaml';
 const _manifestPath = 'web/manifest.json';
 const _indexPath = 'web/index.html';
 
-class _PreparedFile {
-  const _PreparedFile(this.path, this.contents);
-
-  final String path;
-  final String contents;
-}
+class const _PreparedFile(final String path, final String contents);
 
 class _PreparationResult {
-  const _PreparationResult.success([this.file]) : succeeded = true;
-  const _PreparationResult.failure() : succeeded = false, file = null;
+  const new success([this.file]) : succeeded = true;
+  const new failure() : succeeded = false, file = null;
 
   final bool succeeded;
   final _PreparedFile? file;
