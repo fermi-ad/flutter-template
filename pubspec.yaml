@@ -41,7 +41,7 @@ dependencies:
     git:
       url: https://github.com/fermi-ad/flutter-controls-core.git
       tag_pattern: v{{version}}
-    version: ^1.3.0
+    version: ^1.4.0
 
   # Needed for ACSys GraphQL API -- used for obtaining device readings.
   flutter_gql_acsys:
