@@ -19,16 +19,11 @@ const _pubspecPath = 'pubspec.yaml';
 const _manifestPath = 'web/manifest.json';
 const _indexPath = 'web/index.html';
 
-class _PreparedFile {
-  const _PreparedFile(this.path, this.contents);
-
-  final String path;
-  final String contents;
-}
+class const _PreparedFile(final String path, final String contents);
 
 class _PreparationResult {
-  const _PreparationResult.success([this.file]) : succeeded = true;
-  const _PreparationResult.failure() : succeeded = false, file = null;
+  const new success([this.file]) : succeeded = true;
+  const new failure() : succeeded = false, file = null;
 
   final bool succeeded;
   final _PreparedFile? file;
@@ -216,12 +211,15 @@ Future<_PreparationResult> _prepareManifest({
   required String newDescription,
 }) async {
   final file = File(_manifestPath);
+
   if (!file.existsSync()) {
     stdout.writeln('  [SKIP] $_manifestPath — file not found.');
     return const _PreparationResult.success();
   }
+
   try {
     final decoded = jsonDecode(await file.readAsString());
+
     if (decoded is! Map<String, dynamic>) {
       throw const FormatException('root must be an object');
     }
@@ -234,7 +232,9 @@ Future<_PreparationResult> _prepareManifest({
     decoded['name'] = newDisplayName;
     decoded['short_name'] = newDisplayName;
     decoded['description'] = newDescription;
+
     final encoded = const JsonEncoder.withIndent('    ').convert(decoded);
+
     return _PreparationResult.success(
       _PreparedFile(_manifestPath, '$encoded\n'),
     );
@@ -249,10 +249,12 @@ Future<_PreparationResult> _prepareIndexHtml({
   required String newDescription,
 }) async {
   final file = File(_indexPath);
+
   if (!file.existsSync()) {
     stdout.writeln('  [SKIP] $_indexPath — file not found.');
     return const _PreparationResult.success();
   }
+
   try {
     var contents = await file.readAsString();
     final titlePattern = RegExp('<title>[^<]*</title>', caseSensitive: false);
@@ -302,10 +304,7 @@ String htmlEscape(String value) => value
     .replaceAll('&', String.fromCharCodes([38, 97, 109, 112, 59]))
     .replaceAll('<', String.fromCharCodes([38, 108, 116, 59]))
     .replaceAll('>', String.fromCharCodes([38, 103, 116, 59]))
-    .replaceAll(
-      '"',
-      String.fromCharCodes([38, 113, 117, 111, 116, 59]),
-    )
+    .replaceAll('"', String.fromCharCodes([38, 113, 117, 111, 116, 59]))
     .replaceAll("'", String.fromCharCodes([38, 35, 51, 57, 59]));
 
 void _reportError(String path, String message) {
@@ -320,8 +319,10 @@ String _prompt(
 }) {
   while (true) {
     stdout.write(message);
+
     final raw = stdin.readLineSync()?.trim() ?? '';
     final input = raw.isEmpty ? defaultValue : raw;
+
     if (validate != null && !validate(input)) {
       stderr.writeln(validationMessage ?? 'Invalid input. Please try again.');
       continue;
@@ -330,5 +331,6 @@ String _prompt(
   }
 }
 
-bool _isValidDartPackageName(String name) =>
-    RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name);
+final _dartPackagePattern = RegExp(r'^[a-z][a-z0-9_]*$');
+
+bool _isValidDartPackageName(String name) => _dartPackagePattern.hasMatch(name);

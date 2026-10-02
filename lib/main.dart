@@ -8,23 +8,18 @@ import 'package:flutter_gql_acsys/flutter_gql_acsys.dart'
 // application's environment (set themes, prepare authentication resources,
 // etc.)
 
-Future<void> main() async => runFermiApp(
-  appWidget: const App(),
-);
+Future<void> main() => runFermiApp(appWidget: const App());
 
 // This is a simple, private widget that implements one item in the body of
 // the drawer. This demo creates several of these widgets to show how a drawer
 // looks like with content.
 
-class _ExampleItem extends StatelessWidget {
-  const _ExampleItem(this.n);
-  final int n;
-
+class const _ExampleItem(final int n) extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
     title: Text('Item #$n'),
     dense: true,
-    onTap: () => showDialog<()>(
+    onTap: () => showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(title: Text('You picked item #$n.')),
     ),
@@ -32,10 +27,8 @@ class _ExampleItem extends StatelessWidget {
 }
 
 /// Root widget of the application.
-class App extends StatelessWidget {
-  /// Creates the root widget.
-  const App({super.key});
-
+// ignore: public_member_api_docs
+class const App({super.key}) extends StatelessWidget {
   static const _title = 'Fermilab Controls Demo';
 
   // At the very least, the root widget should be `StandardApp`, which
@@ -70,7 +63,7 @@ class App extends StatelessWidget {
       ],
     ),
     appBar: AppBar(title: const Text(_title)),
-    body: _BaseWidget(),
+    body: const _BaseWidget(),
   );
 }
 
@@ -92,9 +85,9 @@ class App extends StatelessWidget {
 // creates the Future and Stream in in the State<> object and only updates them
 // when the user's authorization status changes.
 
-class _BaseWidget extends StatefulWidget {
+class const _BaseWidget() extends StatefulWidget {
   @override
-  State<_BaseWidget> createState() => _BaseWidgetState();
+  _BaseWidgetState createState() => _BaseWidgetState();
 }
 
 class _BaseWidgetState extends State<_BaseWidget> {
