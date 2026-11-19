@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    uses: fermi-ad/.github/.github/workflows/flutter-deploy.yaml@v1.2.0
+    uses: fermi-ad/.github/.github/workflows/flutter-deploy.yaml@v1
     secrets: inherit
     permissions:
       contents: write
